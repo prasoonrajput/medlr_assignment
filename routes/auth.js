@@ -2,7 +2,7 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
-const { body, validationResult } = Require("express-validator");
+const { body, validationResult } = require("express-validator");
 const router = express.Router();
 
 router.post(
@@ -31,6 +31,9 @@ router.post("/login", async (req, res) => {
     );
     if (!isPasswordMatch) {
       return res.status(400).send({ error: "Invalid login credentials" });
+    }
+    else{
+        return res.status(200).send("user is logged in successfully")
     }
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
     res.send({ token });
