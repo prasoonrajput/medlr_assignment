@@ -4,6 +4,21 @@ const Pharmacy = require('../models/Pharmacy');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
+const cache = require('../utils/cache');
+
+router.get('/', async (req, res) => {
+  try {
+    const cachedPharmacies = cache.get('pharmacies');
+    if (cachedPharmacies) {
+      return res.send(cachedPharmacies);
+    }
+    const pharmacies = await Pharmacy.find();
+    cache.set('pharmacies', pharmacies);
+    res.send(pharmacies);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 
 router.post('/', auth, async (req, res) => {
   try {
